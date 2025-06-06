@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Vulnerability Scanner</title>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.css" rel="stylesheet" />
+
+  <style>
+    /* Reset & base */
+    body {
+      width: 360px;
+      padding: 24px 28px;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #121212;
+      color: #E0E0E0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      font-weight: 700;
+      font-size: 20px;
+      color: #00B0FF;
+      letter-spacing: 0.02em;
+    }
+
+    .header .icon {
+      font-size: 28px;
+      transform: translateY(2px);
+    }
+
+    .instruction {
+      font-size: 13px;
+      color: #BBBBBB;
+      margin-bottom: 20px;
+      text-align: center;
+      max-width: 320px;
+      line-height: 1.3;
+    }
+
+    #scan-button {
+      width: 100%;
+      padding: 14px 0;
+      background: linear-gradient(90deg, #0062E0, #00B0FF);
+      border: none;
+      border-radius: 30px;
+      color: white;
+      font-weight: 600;
+      font-size: 17px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 176, 255, 0.5);
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      user-select: none;
+    }
+
+    #scan-button:hover {
+      background: linear-gradient(90deg, #0080FF, #33C7FF);
+      box-shadow: 0 8px 16px rgba(0, 176, 255, 0.7);
+      transform: translateY(-2px);
+    }
+
+    #scan-button:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 8px rgba(0, 176, 255, 0.4);
+    }
+
+    #scan-button:disabled {
+      background: #0050B3;
+      box-shadow: none;
+      cursor: default;
+      opacity: 0.7;
+    }
+
+    .loading-spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #result {
+      margin-top: 24px;
+      background: #1F1F1F;
+      border-radius: 14px;
+      padding: 18px 22px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #D1D9E6;
+      max-height: 320px;
+      overflow-y: auto;
+      width: 100%;
+      box-shadow: inset 0 0 10px rgba(0, 176, 255, 0.15);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      border: 1.5px solid #00B0FF;
+      user-select: text;
+    }
+
+    #result h2 {
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      color: #00B0FF;
+      font-size: 16px;
+      border-bottom: 2px solid #0080FF;
+      padding-bottom: 4px;
+    }
+
+    #result p, #result li {
+      margin-bottom: 8px;
+    }
+
+    #result ul {
+      margin-left: 20px;
+      margin-bottom: 12px;
+    }
+    .util-button {
+      flex: 1;
+      background-color: #475569;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="icon">🔍</span> Vulnerability Scanner
+  </div>
+
+  <div class="instruction">
+    Select code on GitHub, then click <strong>Scan Now</strong>
+  </div>
+
+  <button id="scan-button">Scan Now</button>
+  <div class="buttons-row hidden" id="result-actions">
+    <button class="util-button" id="copy-button">📋 Copy</button>
+    <button class="util-button" id="download-button">⬇️ Save</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
