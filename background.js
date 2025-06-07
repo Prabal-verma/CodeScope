@@ -37,7 +37,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 async function analyzeCodeWithClaude(code) {
   console.log("🤖 Calling Claude API with code length:", code.length);
   
-  const apiKey = "YOUR_API_KEY"; // Replace with your actual API key
+  const apiKey = "fuck-moment"; // Replace with your actual API key
   
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -45,7 +45,8 @@ async function analyzeCodeWithClaude(code) {
       headers: {
         "Content-Type": "application/json",
         "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01"
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
       },
       body: JSON.stringify({
         model: "claude-3-sonnet-20240229",
