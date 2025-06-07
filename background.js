@@ -37,7 +37,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 async function analyzeCodeWithClaude(code) {
   console.log("🤖 Calling Claude API with code length:", code.length);
   
-  const apiKey = "fuck";
+  const apiKey = "YOUR_API_KEY"; // Replace with your actual API key
   
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -45,28 +45,24 @@ async function analyzeCodeWithClaude(code) {
       headers: {
         "Content-Type": "application/json",
         "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
-
+        "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
-        model: "claude-3-5-sonnet-20241022",
-        max_tokens: 1024,
-        temperature: 0.6,
-        messages: [
-          {
-            role: "user",
-            content: `Analyze this JavaScript code for security vulnerabilities (OWASP Top 10, SANS 25, business logic). 
+        model: "claude-3-sonnet-20240229",
+        max_tokens: 4000,
+        messages: [{
+          role: "user",
+          content: `Analyze this code for security vulnerabilities (OWASP Top 10, SANS 25, business logic). 
 Provide a clear, concise report with these sections:
 
 SUMMARY:
-- List vulnerabilities found (name only).
+- List vulnerabilities found (name only)
 
 IMPACT:
-- For each vulnerability, briefly explain what risk it poses (1-2 sentences).
+- For each vulnerability, briefly explain what risk it poses (1-2 sentences)
 
 SOLUTION:
-- For each, give a simple, practical fix or prevention tip with an example if applicable.
+- For each, give a simple, practical fix or prevention tip with an example if applicable
 
 Format as:
 
@@ -82,12 +78,11 @@ SOLUTION:
 
 Keep the entire response concise and easy to scan.
 
-\`\`\`js
+Code to analyze:
+\`\`\`
 ${code}
 \`\`\``
-
-          }
-        ]
+        }]
       })
     });
 
@@ -100,16 +95,17 @@ ${code}
     }
 
     const data = await response.json();
-    console.log("📄 API Response received");
+    console.log("📄 API Response received:", data);
     
     if (!data?.content?.[0]?.text) {
-      throw new Error('No valid response from Claude API');
+      console.error("Invalid API response format:", data);
+      throw new Error('Invalid response format from Claude API');
     }
 
     return data.content[0].text;
     
   } catch (error) {
     console.error("🚨 Claude API Error:", error);
-    throw error;
+    throw new Error(`Failed to analyze code: ${error.message}`);
   }
 }

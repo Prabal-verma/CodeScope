@@ -19,7 +19,7 @@ import {
 import './index.css';
 
 const MODELS = [
-  { label: 'Claude 4 Sonnet', value: 'claude-3-5-sonnet-20241022' },
+  { label: 'Claude 4 Sonnet', value: 'claude-3-sonnet-20240229' },
   { label: 'Gemini 2.5 Flash', value: 'gemini-1.5-flash' },
   { label: 'GPT-4.1 Turbo', value: 'gpt-4o' },
 ];
@@ -312,31 +312,70 @@ function Popup() {
 
   const formatResult = (text) => {
     // Split the text into sections based on common patterns
-    const sections = text.split(/(?=\n[A-Z][A-Z\s]+:)/);
+    const sections = text.split(/(?=\n(?:SUMMARY|IMPACT|SOLUTION):)/);
     
     return sections.map((section, idx) => {
-      // Check if the section contains code
-      const hasCode = section.includes('```');
-      if (hasCode) {
-        // Split into code and non-code parts
+      // Skip empty sections
+      if (!section.trim()) return null;
+
+      // Extract section title and content
+      const [title, ...content] = section.split('\n');
+      const sectionContent = content.join('\n').trim();
+
+      // Format based on section type
+      if (title.includes('SUMMARY')) {
+        return (
+          <div key={idx} className="mb-6">
+            <h2 className="text-lg font-bold text-[#00ff9d] mb-3">{title.trim()}</h2>
+            <ul className="list-disc list-inside space-y-2">
+              {sectionContent.split('\n').map((item, i) => (
+                item.trim() && (
+                  <li key={i} className="text-zinc-300">
+                    {item.replace(/^\d+\.\s*/, '').trim()}
+                  </li>
+                )
+              ))}
+            </ul>
+          </div>
+        );
+      }
+
+      if (title.includes('IMPACT') || title.includes('SOLUTION')) {
+        return (
+          <div key={idx} className="mb-6">
+            <h2 className="text-lg font-bold text-[#00ff9d] mb-3">{title.trim()}</h2>
+            <ol className="list-decimal list-inside space-y-2">
+              {sectionContent.split('\n').map((item, i) => (
+                item.trim() && (
+                  <li key={i} className="text-zinc-300">
+                    {item.replace(/^\d+\.\s*/, '').trim()}
+                  </li>
+                )
+              ))}
+            </ol>
+          </div>
+        );
+      }
+
+      // Handle code blocks
+      if (section.includes('```')) {
         const parts = section.split(/(```[\s\S]*?```)/);
         return (
           <div key={idx} className="mb-4">
             {parts.map((part, i) => {
               if (part.startsWith('```') && part.endsWith('```')) {
-                // Format code block
                 const code = part.replace(/```(?:[\w]+)?\n([\s\S]*?)```/, '$1').trim();
                 return formatCodeBlock(code);
               }
-              // Format regular text
               return <p key={i} className="text-zinc-300 mb-2">{part}</p>;
             })}
           </div>
         );
       }
+
       // Regular text section
       return <p key={idx} className="text-zinc-300 mb-4">{section}</p>;
-    });
+    }).filter(Boolean);
   };
 
   const handleClose = () => {
